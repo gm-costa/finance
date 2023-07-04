@@ -1,38 +1,37 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
+{% block 'title' %}Finance{% endblock  %}
+
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'perfil/css/home.css' %}">
 {% endblock  %}
 
 {% block 'body' %}
     <div class="container">
-        <br>
-        <br>
-        <div class="row">
+        <div class="row my-5">
             <div class="col-md-3">
-                <a style="text-decoration: none; color:white;" href="#">
+                <a class="link" href="#">
                     <div class="card">
                         <div class="row">
                             <div class="col-md-8">
                                 <span  class="fonte-destaque">RS 1.000,00</span>
                             </div>
-                            <div class="col-md">
+                            <div class="col-md text-end">
                                 <img class="icone-setas" src="{% static 'perfil/img/entradas.png' %}">
                             </div>
                         </div>
-        
                     </div>
                 </a>
             </div>
             <div class="col-md-3">
-                <a style="text-decoration: none; color:white;" href="#">
+                <a class="link" href="#">
                     <div class="card">
                         <div class="row">
                             <div class="col-md-8">
                                 <span  class="fonte-destaque">RS 1.000,00</span>
                             </div>
-                            <div class="col-md">
+                            <div class="col-md text-end">
                                 <img class="icone-setas" src="{% static 'perfil/img/saidas.png' %}">
                             </div>
                         </div> 
@@ -40,8 +39,6 @@
                 </a>
             </div>
         </div>
-        <br>
-        <br>
 
         <div class="row">
 
@@ -54,12 +51,14 @@
                     </div>
                     <hr class="hr-borda">
                     <span class="fonte-destaque">Suas contas</span>
-
                     <div class="div-contas">
                         {% for conta in contas %}
                             <div class="lista-conta">
-                                <span>{{conta}}</span>
-                                <span class="total-conta">R$&nbsp;{{conta.valor|floatformat:"2g"}}</span>
+                                {% if conta.icone %}
+                                    <img class="icone-contas ms-2" src="{{conta.icone.url}}" alt="Ícone da conta">
+                                {% endif %}
+                                <span class="align-middle ms-2">{{conta}}</span>
+                                <span class="total-conta me-2">R$&nbsp;{{conta.valor|floatformat:"2g"}}</span>
                             </div>
                             <br>
                         {% endfor %}

@@ -5,6 +5,12 @@
     --differential-color: #E96363;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--dark-color);
     color: white !important;

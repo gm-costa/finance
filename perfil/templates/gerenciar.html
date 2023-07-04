@@ -23,9 +23,12 @@
                 <div class="contas">
                     {% for conta in contas %}
                         <div class="lista-contas-main">
-                            <span><img width="10%" src="{% if conta.icone %}{{conta.icone.url}}{% endif %}">&nbsp;&nbsp;{{conta}}</span>
-                            <span class="total-conta positivo ">R$&nbsp;{{conta.valor|floatformat:"2g"}}
-                                <a href="#modalExcluirConta" data-bs-toggle="modal" data-bs-conta="{{conta.id}}"><img src="{% static 'perfil/img/exit.png' %}"></a>
+                            {% if conta.icone %}
+                                <img class="icone-contas ms-2" src="{{conta.icone.url}}">
+                            {% endif %}
+                            <span class="ms-2">{{conta}}</span>
+                            <span class="total-conta positivo">R$&nbsp;{{conta.valor|floatformat:"2g"}}
+                                <a href="#modalExcluirConta" data-bs-toggle="modal" data-bs-conta="{{conta.id}}"><img  class="ms-2" src="{% static 'perfil/img/exit.png' %}"></a>
                             </span>
                         </div>
                         <br>
