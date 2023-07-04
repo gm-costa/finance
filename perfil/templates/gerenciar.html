@@ -1,0 +1,189 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block 'head' %}
+    <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
+    <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'body' %}
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{message.tags}} text-center mb-3">{{message}}</div>
+                    {% endfor %}
+                {% endif %}
+                <p class="fonte-destaque">Suas contas</p>
+                <hr>
+
+                <div class="contas">
+                    {% for conta in contas %}
+                        <div class="lista-contas-main">
+                            <span><img width="10%" src="{% if conta.icone %}{{conta.icone.url}}{% endif %}">&nbsp;&nbsp;{{conta}}</span>
+                            <span class="total-conta positivo ">R$&nbsp;{{conta.valor|floatformat:"2g"}}
+                                <a href="#modalExcluirConta" data-bs-toggle="modal" data-bs-conta="{{conta.id}}"><img src="{% static 'perfil/img/exit.png' %}"></a>
+                            </span>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </div>
+
+                <hr>
+                <span class="fonte-destaque">Total:</span>
+                <span class="positivo total-conta font-destaque">R$&nbsp;{{total_contas|floatformat:"2g"}}</span>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-5">
+                <p class="fonte-destaque">Nova conta</p>
+                <form action="{% url 'cadastrar_conta' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label>Apelido</label>
+                    <input type="text" name="apelido" class="form-control" placeholder="">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-11 mb-3">
+                            <label for="banco" class="form-label">Banco</label>
+                            <select name="banco" id="banco" class="form-select">
+                                <option value="">- - -</option>
+                                {% for banco in bancos %}
+                                    <option value="{{banco.id}}">{{banco.nome}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <a href="#" class="col-md-1 ps-2 mt-4 pt-1 essencial" data-bs-toggle="modal" data-bs-target="#addBanco"><i class="bi bi-plus-circle-fill" style="font-size: 2rem;"></i></a>
+                    </div>
+                    <label>Tipo</label>
+                    <select name="tipo" class="form-select">
+                        <option value="pf">Pessoa física</option>
+                        <option value="pj">Pessoa jurídica</option>
+                    </select>
+                    <br>
+                    <label>Valor</label>
+                    <input type="number" name="valor" class="form-control" placeholder="">
+                    <br>
+                    <input type="file" placeholder="Ícone" name="icone-conta">
+                    <br>
+                    <br>
+                    <input type="submit" class="botao-principal w-100">
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-5">
+                <label class="fonte-destaque mb-3">Nova categoria</label>
+                <form action="{% url 'cadastrar_categoria' %}" method="POST">
+                    {% csrf_token %}
+                    <label>Categoria</label>
+                    <input type="text" name="categoria" class="form-control">
+                    <br>
+                    <input type="checkbox" name="essencial" value="essencial"><label class="positivo ms-2">Essencial</label>
+                    <br>
+                    <br>
+                    <input type="submit" class="botao-principal w-100" value="Adicionar">
+                </form>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-5">
+                <label class="fonte-destaque mb-3">Suas categorias</label>
+                <div class="contas">
+                    {% for categoria in categorias %}
+                        <div class="lista-contas-main">
+                            <span>{{categoria}}</span>
+                            <span class="total-conta">
+                                <a href="{% url 'atualizar_categoria' categoria.id %}">
+                                    {% if categoria.essencial %}
+                                        <img src="{% static 'perfil/img/check.png' %}">
+                                    {% else %}
+                                        <img src="{% static 'perfil/img/exit.png' %}">
+                                    {% endif %}
+                                </a>
+                            </span>
+                        </div>
+                        <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addBanco" tabindex="-1" aria-labelledby="addBancoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-success" id="addBancoLabel">Novo Banco</h1>
+                        <button type="button" class="btn-close bg-dark-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'cadastrar_banco' %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mt-1 mb-3">
+                                <label for="nome-banco" class="form-label">Nome</label>
+                                <input type="text" class="form-control form-control-sm" name="nome-banco" id="nome-banco" autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="icone-banco" class="form-label">Ícone</label>
+                                <input class="form-control form-control-sm" name="icone-banco" id="icone-banco" type="file">
+                            </div>
+                            <input type="submit" class="btn-main w-100 mt-2 mb-2 col-md" value="Adicionar">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Modal excluir conta -->
+    <div class="modal fade" id="modalExcluirConta" tabindex="-1" aria-labelledby="excluirContaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-success" id="excluirContaLabel">Excluir conta</h1>
+                    <button type="button" class="btn-close bg-dark-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Confirma a exclusão da conta?</h6>
+                    <form id="formExcluirConta" method="POST">
+                        {% csrf_token %}
+                        <div class="d-flex flex-row justify-content-center gap-4">
+                            <button type="button" class="btn btn-secondary btn-sm mt-2" data-bs-dismiss="modal">Cancelar</button>
+                            <input type="submit" class="btn btn-danger btn-sm mt-2" value="Excluir">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block 'script' %}
+    <!--
+    <script src="{% static 'perfil/gerenciar/js/gerenciar.js' %}"></script>
+    -->
+    <script>
+        const modalExcluirConta = document.getElementById('modalExcluirConta');
+        const formExcluirConta = document.getElementById('formExcluirConta');
+    
+        modalExcluirConta.addEventListener('show.bs.modal', event => {
+            // pega o botão que acionou o modal
+            const btnClicado = event.relatedTarget
+            // pega o atributo passado no botão
+            const conta = btnClicado.getAttribute('data-bs-conta');
+            console.log(conta);
+            // define a action do form
+            formExcluirConta.setAttribute('action', `/perfil/excluir_conta/${conta}`);
+        });
+        
+    </script>
+{% endblock  %}

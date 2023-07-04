@@ -50,24 +50,22 @@
                     <div class="saldo">
                         <span class="fonte-destaque">Saldo total</span>
                         <br>
-                        <span class="font-light">R$ 1.200,00</span>
+                        <span class="fonte-light">R$&nbsp;{{saldo_total|floatformat:"2g"}}</span>
                     </div>
                     <hr class="hr-borda">
                     <span class="fonte-destaque">Suas contas</span>
 
                     <div class="div-contas">
-                        
+                        {% for conta in contas %}
                             <div class="lista-conta">
-                                <span>Nubank</span>
-                                <span class="total-conta">R$ 3.000,00</span>
+                                <span>{{conta}}</span>
+                                <span class="total-conta">R$&nbsp;{{conta.valor|floatformat:"2g"}}</span>
                             </div>
                             <br>
-                        
-                        
-                        
+                        {% endfor %}
                     </div>
                     <hr class="hr-borda">
-                    <a href="#" class="botao-principal">Gerenciar contas</a>
+                    <a href="{% url 'gerenciar' %}" class="botao-principal">Gerenciar contas</a>
                 </div>
                 
             </div>
@@ -79,14 +77,14 @@
                             <div class="saldo">
                                 <span class="fonte-destaque">Saldo mensal</span>
                                 <br>
-                                <span class="font-light">R$ 0.000,00</span>
+                                <span class="fonte-light">R$ 0.000,00</span>
                             </div>
                         </div>
                         <div class="col-md">
                             <div class="despesa">
                                 <span class="fonte-destaque">Despesa mensal</span>
                                 <br>
-                                <span class="font-light">R$ 0.000,00</span>
+                                <span class="fonte-light">R$ 0.000,00</span>
                             </div>
 
                         </div>
@@ -113,7 +111,7 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="card">
+                <div class="card text-white">
                     <span class="fonte-destaque">Equilibrio financeiro</span>
                     <hr class="hr-borda">
 

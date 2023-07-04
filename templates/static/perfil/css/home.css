@@ -15,7 +15,7 @@
     font-size: 25px;
 }
 
-.font-light {
+.fonte-light {
     color: #fff;
     font-weight: 200;
 }
@@ -25,6 +25,7 @@
 }
 
 .lista-conta {
+    color: #fff;
     background-color: var(--dark-color);
     padding: 8px;
     border-radius: 10px;
