@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import Sum
+
+from extrato.models import Valores
 from .models import Banco, Categoria, Conta
 from .utils import calcula_total
 
@@ -143,3 +145,19 @@ def atualizar_categoria(request, id):
         messages.add_message(request, messages.WARNING, 'Método inválido!')
 
     return redirect(reverse('gerenciar'))
+
+
+def dashboard(request):
+    dados = {}
+    categorias = Categoria.objects.all()
+
+    for categoria in categorias:
+        dados[categoria.nome] = Valores.objects.filter(categoria=categoria).aggregate(Sum('valor'))['valor__sum']
+    print(dados)
+
+    context = {
+        'labels': list(dados.keys()),
+        'values': list(dados.values())
+    }
+
+    return render(request, 'dashboard.html', context)
