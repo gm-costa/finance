@@ -9,70 +9,62 @@
 {% block 'body' %}
 
     <div class="container">
-        <br>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        <br>
-        <span class="fonte-destaque">Adicionar entradas/saídas</span>
-        <div class="row">
 
-            <div class="col-md-7">
-                <form action="{% url 'novo_valor' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md">
-                            <label>Valor</label>
-                            <input name="valor" type="text" class="form-control">
-                        </div>
+        <div class="w-50 mx-auto mt-5">
+            <h3 class="fonte-destaque mb-3">Adicionar entradas/saídas</h3>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }} text-center mb-3">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
 
-                        <div class="col-md">
-                            <label>Categoria</label>
-                            <select name="categoria" class="form-select">
-                                <option value="">- - -</option>
-                                {% for categoria in categorias %}
-                                    <option value="{{categoria.id}}">{{categoria}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+            <form action="{% url 'novo_valor' %}" method="POST">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md">
+                        <label>Valor</label>
+                        <input name="valor" type="text" class="form-control">
                     </div>
-                    <br>
-                    <label>Descrição</label>
-                    <textarea name="descricao" class="form-control"></textarea>
-                    <br>
-                    <div class="row">
-                        <div class="col-md">
-                            <label>Data</label>  
-                            <input name="data" type="date" class="form-control">
-                        </div>
-
-                        <div class="col-md">
-                            <label>Conta</label>
-                            <select name="conta" class="form-select">
-                                <option value="">- - -</option>
-                                {% for conta in contas %}
-                                    <option value="{{conta.id}}">{{conta}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class="col-md">
+                        <label>Categoria</label>
+                        <select name="categoria" class="form-select">
+                            <option value="">- - -</option>
+                            {% for categoria in categorias %}
+                                <option value="{{categoria.id}}">{{categoria}}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <br>
-                    <input type="radio" name="tipo" value="E"> <label class="positivo">Entrada</label>
-                    <input type="radio" name="tipo" value="S"> <label class="negativo">Saída</label>
-                    <br>
-                    <br>
-                    <input type="submit" style="width:40%;" class="botao-principal">
+                </div>
 
-                </form>
-            </div>
+                <label>Descrição</label>
+                <textarea name="descricao" class="form-control mb-3"></textarea>
 
-            <div class="col-md-8">
-            </div>
+                <div class="row mb-3">
+                    <div class="col-md">
+                        <label>Data</label>  
+                        <input name="data" type="date" class="form-control">
+                    </div>
+                    <div class="col-md">
+                        <label>Conta</label>
+                        <select name="conta" class="form-select">
+                            <option value="">- - -</option>
+                            {% for conta in contas %}
+                                <option value="{{conta.id}}">{{conta}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="radio" name="tipo" value="E"><label class="positivo ms-1">Entrada</label>
+                    <input type="radio" class="ms-3" name="tipo" value="S"><label class="negativo ms-1">Saída</label>
+                </div>
+
+                <input type="submit" class="botao-principal px-5">
+
+            </form>
 
         </div>
-
     </div>
 
 {% endblock %}

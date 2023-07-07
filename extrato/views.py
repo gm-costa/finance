@@ -50,11 +50,14 @@ def novo_valor(request):
 
             if tipo == 'E':
                 conta.valor += float(valor)
+                tipo_descricao = 'Entrada'
             else:
                 conta.valor -= float(valor)
+                tipo_descricao = 'Saída'
 
             conta.save()
-            messages.add_message(request, messages.SUCCESS, 'Categoria cadastrada com sucesso')
+            messages.add_message(request, messages.SUCCESS, f'{tipo_descricao} cadastrada com sucesso.')
+
         except Exception as e:
             messages.add_message(request, messages.ERROR, f'Ocorreu um erro ao salvar, tente novamente!\n{e}')
         
@@ -67,7 +70,7 @@ def ver_extrato(request):
     contas = Conta.objects.all().order_by('apelido')
     categorias = Categoria.objects.all().order_by('nome')
 
-    valores = Valores.objects.filter(data__month=datetime.now().month)
+    valores = Valores.objects.filter(data__month=datetime.now().month).order_by('data')
 
     conta_get = request.GET.get('conta')
     categoria_get = request.GET.get('categoria')

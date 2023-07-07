@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block 'head' %}
+    <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
+    <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
+    <link href="{% static 'extrato/css/ver_extrato.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block 'body' %}
+
+    <div class="container">
+        <br>
+        <br>
+        <p class="fonte-destaque">Definir planejamento</p>
+        <div class="card">
+        
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Valor</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for categoria in categorias %}
+                        <tr class="linha">
+                            <td>{{categoria}}</td>
+                            <td><input type="number" class="form-control w-50 text-end ms-auto" id="valor-categoria-{{categoria.id}}" data-valor="{{categoria.valor_planejamento}}" step="0.01"></td>
+                            <td><button class="botao-secundario" onclick="update_valor_planejamento_categoria({{categoria.id}})">Salvar</button></td>         
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block 'script' %}
+    <script>
+
+        let valoresPlanejamento = document.querySelectorAll('input');
+
+        for(let i=0; i < valoresPlanejamento.length; i++) {
+            let inputVP = valoresPlanejamento[i];
+            let vp = valoresPlanejamento[i].getAttribute('data-valor');
+            vp = vp.replace(',', '.');
+            vp = new Intl.NumberFormat('en', {style: 'decimal', minimumFractionDigits: 2 }).format(vp);
+            inputVP.setAttribute('value', vp);
+        };
+        
+        
+        function update_valor_planejamento_categoria(id){
+            valor = document.getElementById('valor-categoria-'+id).value;
+
+            fetch("/planejamento/update_valor_categoria/"+id, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({novo_valor: valor})
+                
+            }).then(function(result){
+                return result.json()
+            }).then(function(data){
+               //console.log(data)
+            })
+        }
+
+    </script>
+
+{% endblock  %}

@@ -1,28 +1,28 @@
-table{
+table {
     width: 100%;
     padding: 20px;
     text-align: center;
-
 }
 
-.linha{
-    height: 40px;
+thead, tbody {
+    color: white;
+}
+
+tbody {
+    font-weight: 300;
+}
+
+.linha {
     background-color: var(--dark-color);
+    height: 40px;
     padding: 20px;
 }
 
-
-td, th{
+td, th {
     padding: 20px;
-}
-
-tr{
-    background-color: var(--main-color);
-
 }
 
 .botao-secundario{
-
     background-color: transparent;
     color: white;
     text-decoration: none;
@@ -32,5 +32,4 @@ tr{
     width: 100%;
     display: block;
     text-align: center;
-
 }

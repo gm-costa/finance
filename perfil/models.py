@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.db import models
+from django.db.models import Sum
 
 
 class Categoria(models.Model):
@@ -8,6 +10,20 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nome
+    
+    def total_gasto(self):
+        from extrato.models import Valores
+        valores = Valores.objects.filter(categoria__id = self.id).filter(data__month=datetime.now().month).aggregate(Sum('valor'))
+        return valores['valor__sum'] if valores['valor__sum'] else 0
+
+    def calcula_percentual_gasto_por_categoria(self):
+		# Adicione valores no planejamento diferente de 0 para não dar erro
+        if self.valor_planejamento == 0:
+            percentual = 0
+        else:
+            percentual = (self.total_gasto() * 100) / self.valor_planejamento
+
+        return int(percentual)
 
 
 class Banco(models.Model):

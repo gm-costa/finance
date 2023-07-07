@@ -17,3 +17,7 @@ class Valores(models.Model):
 
     def __str__(self):
         return self.descricao
+
+    class Meta:
+        verbose_name_plural = 'valores'
+    
