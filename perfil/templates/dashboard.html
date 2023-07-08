@@ -4,7 +4,9 @@
 {% block 'head' %}
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
     <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
-    <link href="{% static 'contas/css/contas.css' %}" rel="stylesheet">
+    <!--
+        <link href="{% static 'contas/css/contas.css' %}" rel="stylesheet">
+    -->
 {% endblock %}
 
 {% block 'body' %}
@@ -13,7 +15,7 @@
         <br>
         {% if messages %}
             {% for message in messages %}
-                <div class="alert {{ message.tags }}">{{ message }}</div>
+                <div class="alert {{ message.tags }} text-center mb-3">{{ message }}</div>
             {% endfor %}
         {% endif %}
         <br>
@@ -31,11 +33,9 @@
 
 {% block 'script' %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{% static 'perfil/js/dashboard.js' %}"></script>
-    <!--
     <script>
         const ctx = document.getElementById('myChart');
-    
+        
         new Chart(ctx, {
             type: 'bar',
             data: {
@@ -43,10 +43,13 @@
                 datasets: [{
                     label: 'Gastos por categoria',
                     data: {{values}},
+                    backgroundColor: {{cores_de_fundo|safe}},
+                    borderColor: {{cores_da_borda|safe}},
+                    borderWidth: 1
                 }]
             },    
         });
-    
+        
     </script>
-    -->
+
 {% endblock  %}

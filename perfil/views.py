@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
@@ -5,15 +6,27 @@ from django.db.models import Sum
 
 from extrato.models import Valores
 from .models import Banco, Categoria, Conta
-from .utils import calcula_total
+from .utils import calcula_equilibrio_financeiro, calcula_total, gera_cor_da_barra
 
 
 def home(request):
     contas = Conta.objects.all()
+    valores = Valores.objects.filter(data__month=datetime.now().month)
+
+    total_entradas = calcula_total(valores.filter(tipo='E'), 'valor')
+    total_saidas = calcula_total(valores.filter(tipo='S'), 'valor')
+    
     saldo_total = calcula_total(contas, 'valor')
+
+    percentual_gastos_essenciais, percentual_gastos_nao_essenciais = calcula_equilibrio_financeiro()
+
     context = {
         'contas': contas,
-        'saldo_total': saldo_total
+        'saldo_total': saldo_total,
+        'total_entradas': total_entradas,
+        'total_saidas': total_saidas,
+        'percentual_gastos_essenciais': percentual_gastos_essenciais,
+        'percentual_gastos_nao_essenciais': percentual_gastos_nao_essenciais
     }
     return render(request, 'home.html', context)
 
@@ -152,12 +165,26 @@ def dashboard(request):
     categorias = Categoria.objects.all()
 
     for categoria in categorias:
-        dados[categoria.nome] = Valores.objects.filter(categoria=categoria).aggregate(Sum('valor'))['valor__sum']
-    print(dados)
+        # dados[categoria.nome] = Valores.objects.filter(categoria=categoria).aggregate(Sum('valor'))['valor__sum']
+        soma_categoria = Valores.objects.filter(categoria=categoria).filter(tipo='S').aggregate(Sum('valor'))['valor__sum']
+        if soma_categoria:
+            dados[categoria.nome] = soma_categoria
+
+    # lista_valores = [0 if v == None else v for v in list(dados.values())]
+
+    cores_da_borda = [gera_cor_da_barra() for i in range(len(dados))]
+    cores_de_fundo = [cor.replace('rgb', 'rgba') for cor in cores_da_borda]
+    cores_de_fundo = [cor.replace(')', ',0.2)') for cor in cores_de_fundo]
+
+    print(f'cores_de_fundo: {cores_de_fundo}')
+    print(f'cores_da_borda: {cores_da_borda}')
 
     context = {
         'labels': list(dados.keys()),
-        'values': list(dados.values())
+        'values': list(dados.values()),
+        # 'values': lista_valores
+        'cores_de_fundo': cores_de_fundo,
+        'cores_da_borda': cores_da_borda
     }
 
     return render(request, 'dashboard.html', context)
