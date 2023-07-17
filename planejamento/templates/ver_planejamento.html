@@ -9,29 +9,35 @@
 
 {% block 'body' %}
 
-    <div class="container">
-        <br>
-        <br>
-        <div class="row">
-            <div class="col-md-2 text-center">
-            </div>
-            <div class="col-md">
-                <div class="card text-white">
-                    {% for categoria in categorias %}
-                        <p>{{categoria}}</p>
-                        <div>
-                            <span class="fonte-light" style="float: left !important;">R$ {{categoria.total_gasto|floatformat:"2g"}}</span>
-                            <span class="fonte-light" style="float: right !important;">R$ {{categoria.valor_planejamento|floatformat:"2g"}}</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: {{categoria.calcula_percentual_gasto_por_categoria}}%;" aria-valuenow="{{categoria.calcula_percentual_gasto_por_categoria}}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <br>
-                    {% endfor %}
+    <div class="w-75 mx-auto my-5">
+        <div class="d-flex align-items-center justify-content-between my-5">
+            <p class="fonte-destaque mb-0">Planejamento</p>
+            <input type="month" name="mes-ano" class="form-control text-center" style="width: 182px" value="{{mes_ano}}">
+            <a href="{% url 'definir_planejamento' %}" class="botao-secundario">Definir planejamento</a>
+        </div>
+        <div class="col-md">
+            <div class="card text-white">
+                <label class="fs-1 text-center mb-2">Total</label>
+                <div>
+                    <span class="fonte-light" style="float: right !important;">R$ {{total_valor_gasto|floatformat:"2g"}}&nbsp;de&nbsp;R$ {{total_valor_planejamento|floatformat:"2g"}}</span>
                 </div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped bg-danger text-black" role="progressbar" style="width: {{total_percentual_gasto}}%;" aria-valuenow="{{total_percentual_gasto}}" aria-valuemin="0" aria-valuemax="100">{{total_percentual_gasto}}%</div>
+                </div>
+                <hr class="border border-black">
+                {% for categoria in categorias %}
+                    <p class="mb-0">{{categoria}}</p>
+                    <div>
+                        <span class="fonte-light" style="float: right !important;">R$ {{categoria.total_gasto|floatformat:"2g"}}&nbsp;de&nbsp;R$ {{categoria.valor_planejamento|floatformat:"2g"}}</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped text-black" role="progressbar" style="background-color: #65ac8aea;width: {{categoria.calcula_percentual_gasto_por_categoria}}%;" aria-valuenow="{{categoria.calcula_percentual_gasto_por_categoria}}" aria-valuemin="0" aria-valuemax="100">{{categoria.calcula_percentual_gasto_por_categoria}}%</div>
+                    </div>
+                    <br>
+                {% endfor %}
             </div>
-            <div class="col-md-2 text-center"></div>
         </div>
     </div>
+    
 
 {% endblock %}

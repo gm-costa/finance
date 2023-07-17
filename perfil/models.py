@@ -13,17 +13,21 @@ class Categoria(models.Model):
     
     def total_gasto(self):
         from extrato.models import Valores
-        valores = Valores.objects.filter(categoria__id = self.id).filter(data__month=datetime.now().month).aggregate(Sum('valor'))
+        MES_ATUAL = datetime.now().month
+        ANO_ATUAL = datetime.now().year
+
+        valores = Valores.objects.filter(categoria__id = self.id).filter(data__month=MES_ATUAL).filter(data__year=ANO_ATUAL)
+        valores = valores.filter(tipo='S').aggregate(Sum('valor'))
+        
         return valores['valor__sum'] if valores['valor__sum'] else 0
 
     def calcula_percentual_gasto_por_categoria(self):
-		# Adicione valores no planejamento diferente de 0 para não dar erro
         if self.valor_planejamento == 0:
             percentual = 0
         else:
             percentual = (self.total_gasto() * 100) / self.valor_planejamento
 
-        return int(percentual)
+        return round(percentual)
 
 
 class Banco(models.Model):

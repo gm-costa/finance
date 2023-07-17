@@ -1,0 +1,25 @@
+<div class="modal fade" id="addCategoria" tabindex="-1" aria-labelledby="addCategoriaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-success" id="addCategoriaLabel">Nova categoria</h1>
+                <button type="button" class="btn-close bg-dark-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'cadastrar_categoria' %}" method="POST">
+                    {% csrf_token %}
+                    <input name="url-da-pagina" class="d-none"></input>
+                    <div class="mt-1 mb-3">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <input type="text" class="form-control form-control-sm" name="categoria" id="categoria" placeholder="Nome da categoria" autofocus>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="cat-essencial" id="cat-essencial">
+                        <label for="cat-essencial" class="positivo ms-1">Essencial</label>
+                    </div>
+                    <input type="submit" class="botao-principal w-100" value="Adicionar">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

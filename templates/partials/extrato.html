@@ -1,29 +1,54 @@
 {% load static %}
-
-<div class="card">
-    
-    <table>
-        <tr>
-            <th>Conta</th>
-            <th>Categoria</th>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>valor</th>
-        </tr>
-        {% for valor in valores %}
-            <tr class="linha">
-                <td width="10%">{{valor.conta}}</td>
-                <td>{{valor.categoria}}</td>
-                <td>{{valor.data}}</td>
-                <td>
-                {% if valor.tipo == 'S'%}
-                    <img src="{% static 'perfil/img/saidas.png' %}">
-                {% else %}
-                    <img src="{% static 'perfil/img/entradas.png' %}">
-                {% endif %}
-                </td>
-                <td>R$ {{valor.valor}}</td>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        .positivo {
+            color: #69D2CD;
+        }
+        .negativo {
+            color: #E96363;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="text-center">Extrato Mensal</h2>
+    <h6 class="text-center">({{mes_ano}})</h6>
+    <table class="table mt-5">
+        <thead class="text-center">
+            <tr>
+                <th>Conta</th>
+                <th>Categoria</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>valor</th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for valor in valores %}
+                <tr class="linha">
+                    <td width="10%">{{valor.conta}}</td>
+                    <td>{{valor.categoria}}</td>
+                    <td class="text-center">{{valor.data|date:"d/m/Y"}}</td>
+                    <td class="text-center">
+                    {% if valor.tipo == 'E'%}
+                        <i class="bi bi-arrow-down-left-circle-fill text-success icone-contas positivo"></i>
+                    {% else %}
+                        <i class="bi bi-arrow-up-right-circle-fill text-danger icone-contas negativo"></i>
+                    {% endif %}
+                    </td>
+                    <td class="text-end">R$ {{valor.valor|floatformat:"2g"}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</div>
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
+{% block 'title' %}Extrato{% endblock  %}
+
 {% block 'head' %}
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
     <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
@@ -8,50 +10,57 @@
 {% endblock %}
 
 {% block 'body' %}
-    <br>
-    <br>
-    <div class='container'>
+    <div class="py-5">
+        <h1 class="mb-3">Extrato</h1>
+        <hr class="mt-0">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{message.tags}} text-center mb-3">{{message}}</div>
+            {% endfor %}
+        {% endif %}
         <form action="{% url 'ver_extrato' %}" method="GET">
-            <div class="row">                
+            <div class="row mb-4">                
                 <div class="col-md">
-                    <label>Conta</label>
+                    <label for="conta">Conta</label>
                     <select name="conta" class="form-select">
                         <option value="">- - -</option>
                         {% for conta in contas %}
-                            <option value="{{conta.id}}">{{conta}}</option>
+                            <option value="{{conta.id}}" {% if conta_filter.id == conta.id %} selected {% endif %}>{{conta}}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md">
-                    <label>Categoria</label>
+                <div class="col-md px-4">
+                    <label for="categoria">Categoria</label>
                     <select name="categoria" class="form-select">
                         <option value="">- - -</option>
                         {% for categoria in categorias %}
-                            <option value="{{categoria.id}}">{{categoria}}</option>
+                            <option value="{{categoria.id}}" {% if categoria_filter.id == categoria.id %} selected {% endif %}>{{categoria}}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="col-md">
-                    <label>Período</label>
+                    <label for="periodo">Período</label>
                     <select name="periodo" class="form-select">
-                        <option>Últimos 7 dias</option>
+                        <option value="">- - -</option>
+                        {% for key, value in periodos.items %}
+                            <option value="{{key}}" {% if key == periodo_filter %} selected {% endif %}>{{value}}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
-            <br>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="submit" class="botao-principal w-100" value="Filtrar">    
-                </div>
-                <div class="col-md-2">
-                    <a href="{% url 'exportar_pdf' %}" class="botao-secundario">Exportar extrato</a>
-                </div>
+
+            <div class="d-flex gap-4">
+
+                <input type="submit" class="botao-principal px-4" value="Filtrar">    
+
+                <a href="{% url 'exportar_pdf' %}" class="botao-secundario px-4" target="_blank">Exportar</a>
+
+                <a href="{% url 'ver_extrato' %}" class="botao-secundario px-3" id="btnRemoveFiltro" data-bs-custom-class="custom-tooltip" data-bs-tt="tooltip" data-bs-placement="top" title="Desfazer filtro"><i class="bi bi-arrow-counterclockwise"></i></a>
+
             </div>
         </form>
-        <br>
-        <br>
 
-        <div class="card">
+        <div class="bg-color-main mt-5 px-3">
             <table>
                 <thead>
                     <tr>
@@ -65,17 +74,22 @@
                 <tbody>
                     {% for valor in valores %}
                     <tr class="linha">
-                        <td width="10%">{{valor.conta}}</td>
-                        <td>{{valor.categoria}}</td>
+                        <td class="text-start">
+                            {% if valor.conta.icone %}
+                                <img class="icone-contas me-2" src="{{valor.conta.icone.url}}" alt="Ícone da conta">
+                            {% endif %}
+                            <span>{{valor.conta}}</span>
+                        </td>
+                        <td class="text-start">{{valor.categoria}}</td>
                         <td>{{valor.data}}</td>
                         <td>
-                            {% if valor.tipo == 'S'%}
-                                <img src="{% static 'perfil/img/saidas.png' %}">
+                            {% if valor.tipo == 'E'%}
+                                <i class="bi bi-arrow-down-left-circle-fill icone-contas positivo"></i>
                             {% else %}
-                                <img src="{% static 'perfil/img/entradas.png' %}">
+                                <i class="bi bi-arrow-up-right-circle-fill icone-contas negativo"></i>
                             {% endif %}      
                         </td>
-                        <td>R$ {{valor.valor|floatformat:"2g"}}</td>
+                        <td class="text-end">R$ {{valor.valor|floatformat:"2g"}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -83,3 +97,13 @@
         </div>
     </div>
 {% endblock %}
+
+
+{% block 'script' %}
+    <script>
+
+        //const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        //const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    </script>
+{% endblock  %}

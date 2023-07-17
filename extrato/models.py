@@ -9,10 +9,10 @@ class Valores(models.Model):
     )
     
     valor = models.FloatField()
-    categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING, related_name='valores')
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='valores')
     descricao = models.TextField()
     data = models.DateField()
-    conta = models.ForeignKey(Conta, on_delete=models.DO_NOTHING, related_name='contas')
+    conta = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='contas')
     tipo = models.CharField(max_length=1, choices=choice_tipo)
 
     def __str__(self):

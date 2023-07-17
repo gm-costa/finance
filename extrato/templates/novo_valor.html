@@ -1,6 +1,8 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
+{% block 'title' %}Entradas/saídas{% endblock  %}
+
 {% block 'head' %}
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
     <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
@@ -8,63 +10,152 @@
 
 {% block 'body' %}
 
-    <div class="container">
+    <div class="w-75 mx-auto mt-5">
+        <h3 class="fonte-destaque mb-4">Adicionar entradas/saídas</h3>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} text-center mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
 
-        <div class="w-50 mx-auto mt-5">
-            <h3 class="fonte-destaque mb-3">Adicionar entradas/saídas</h3>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }} text-center mb-3">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-
-            <form action="{% url 'novo_valor' %}" method="POST">
-                {% csrf_token %}
-                <div class="row mb-3">
-                    <div class="col-md">
-                        <label>Valor</label>
-                        <input name="valor" type="text" class="form-control">
-                    </div>
-                    <div class="col-md">
-                        <label>Categoria</label>
-                        <select name="categoria" class="form-select">
-                            <option value="">- - -</option>
-                            {% for categoria in categorias %}
-                                <option value="{{categoria.id}}">{{categoria}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+        <form action="{% url 'novo_valor' %}" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md mb-3">
+                    <label for="valor">Valor</label>
+                    <input type="number" class="form-control" name="valor" step="0.01">
                 </div>
+                <div class="col-md mb-3">
+                    <label for="categoria-id">Categoria</label>
+                    <select name="categoria-id" class="form-select">
+                        <option value="">- - -</option>
+                        {% for categoria in categorias %}
+                            <option value="{{categoria.id}}">{{categoria}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-1 mb-3" style="padding-top: 19px;">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#addCategoria" data-bs-custom-class="custom-tooltip" data-bs-tt="tooltip" data-bs-placement="top" title="Nova categoria"><i class="bi bi-plus-circle-fill icone-contas positivo"></i></a>
+                </div>
+            </div>
 
+            <div class="mb-3">
                 <label>Descrição</label>
-                <textarea name="descricao" class="form-control mb-3"></textarea>
+                <textarea name="descricao" class="form-control"></textarea>
+            </div>
 
-                <div class="row mb-3">
-                    <div class="col-md">
-                        <label>Data</label>  
-                        <input name="data" type="date" class="form-control">
-                    </div>
-                    <div class="col-md">
-                        <label>Conta</label>
-                        <select name="conta" class="form-select">
-                            <option value="">- - -</option>
-                            {% for conta in contas %}
-                                <option value="{{conta.id}}">{{conta}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="row">
+                <div class="col-md mb-3">
+                    <label>Data</label>  
+                    <input name="data" type="date" class="form-control">
                 </div>
-
-                <div class="mb-3">
-                    <input type="radio" name="tipo" value="E"><label class="positivo ms-1">Entrada</label>
-                    <input type="radio" class="ms-3" name="tipo" value="S"><label class="negativo ms-1">Saída</label>
+                <div class="col-md mb-3">
+                    <label>Conta</label>
+                    <select name="conta" class="form-select">
+                        <option value="">- - -</option>
+                        {% for conta in contas %}
+                            <option value="{{conta.id}}">{{conta}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
+                <div class="col-md-1 mb-3" style="padding-top: 19px;">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#addConta" data-bs-custom-class="custom-tooltip" data-bs-tt="tooltip" data-bs-placement="top" title="Nova conta"><i class="bi bi-plus-circle-fill icone-contas positivo"></i></a>
+                </div>
+            </div>
 
-                <input type="submit" class="botao-principal px-5">
-
-            </form>
-
-        </div>
+            <div class="mb-3">
+                <input type="radio" class="form-check-input" name="tipo" value="E"><label class="positivo ms-2">Entrada</label>
+                <input type="radio" class="form-check-input ms-4" name="tipo" value="S"><label class="negativo ms-2">Saída</label>
+            </div>
+            <input type="submit" class="botao-principal mt-2" style="width: 200px">
+        </form>
     </div>
 
+    <!-- Modal nova categoria -->
+    {% include 'partials/modal_nova_categoria.html' %}
+
+    <!-- Modal nova conta -->
+    <div class="modal fade" id="addConta" tabindex="-1" aria-labelledby="addContaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-success" id="addContaLabel">Nova conta</h1>
+                    <button type="button" class="btn-close bg-dark-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="px-4" action="{% url 'cadastrar_conta' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input name="url-da-pagina" class="d-none"></input>
+                        <div class="mb-3">
+                            <label>Apelido</label>
+                            <input type="text" name="apelido" class="form-control" placeholder="">
+                        </div>
+                        <div class="row pe-3">
+                            <div class="col-md-11 mb-3">
+                                <label for="banco" class="form-label">Banco</label>
+                                <select name="banco" id="banco" class="form-select">
+                                    <option value="">- - -</option>
+                                    {% for banco in bancos %}
+                                        <option value="{{banco.id}}">{{banco.nome}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-1 mb-3 mt-4 pt-1">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#addBanco" data-bs-custom-class="custom-tooltip" data-bs-tt="tooltip" data-bs-placement="top" title="Novo banco"><i class="bi bi-plus-circle-fill icone-contas positivo"></i></a>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Tipo</label>
+                            <select name="tipo" class="form-select">
+                                <option value="pf">Pessoa física</option>
+                                <option value="pj">Pessoa jurídica</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label>Valor</label>
+                            <input type="number" name="valor" class="form-control" placeholder="">
+                        </div>
+                        <input type="file" placeholder="Ícone" name="icone-conta">
+                        <input type="submit" class="botao-principal w-100 mt-4" value="Adicionar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal novo banco -->
+    <div class="modal fade" id="addBanco" tabindex="-1" aria-labelledby="addBancoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-success" id="addBancoLabel">Novo Banco</h1>
+                    <button type="button" class="btn-close bg-dark-subtle" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'cadastrar_banco' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input name="url-da-pagina" class="d-none"></input>
+                        <div class="mt-1 mb-3">
+                            <label for="nome-banco" class="form-label">Nome</label>
+                            <input type="text" class="form-control form-control-sm" name="nome-banco" id="nome-banco" autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="icone-banco" class="form-label">Ícone</label>
+                            <input class="form-control form-control-sm" name="icone-banco" id="icone-banco" type="file">
+                        </div>
+                        <input type="submit" class="botao-principal w-100 mt-2 mb-2 col-md" value="Adicionar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 {% endblock %}
+
+{% block 'script' %}
+    <script>
+        const urls = document.querySelectorAll('input[name=url-da-pagina]');
+        for (const url of urls) {
+            url.value = window.location.href;
+        }
+    </script>
+{% endblock  %}

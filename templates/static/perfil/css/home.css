@@ -21,16 +21,26 @@
 }
 
 .hr-borda {
-    color: var(--dark-color);
+    border: 1px solid var(--dark-color);
 }
 
-.lista-conta {
+.lista-conta,
+.lista-categoria {
     color: #fff;
-    background-color: var(--dark-color);
+    /* background-color: var(--dark-color); */
     padding: 8px;
     border-radius: 10px;
-    /* display: flex;
-    align-items: center; */
+    display: flex;
+    align-items: center;
+}
+
+.bg-color-dark {
+    background-color: var(--dark-color);
+}
+
+.bg-color-main {
+    background-color: var(--main-color);
+    color: #65ac8aea;
 }
 
 .total-conta {
@@ -38,10 +48,6 @@
     font-weight: 200;
     float: right;
 }
-
-/* .lista-conta:last-child {
-    text-align-last: end;
-} */
 
 .botao-principal {
     text-decoration: none;
@@ -53,6 +59,32 @@
     text-align: center;
     border-radius: 15px;
     border: none;
+    text-transform: uppercase;
+    opacity: .7;
+    transition: .3s;
+}
+
+.botao-secundario {
+    text-decoration: none;
+    color:  var(--contrast-color);
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px;
+    background-color: transparent;
+    text-align: center;
+    border-radius: 15px;
+    border: 1px solid var(--contrast-color);
+    text-transform: uppercase;
+    opacity: .7;
+    transition: .3s;
+    display: block;
+    /* text-align: center; */
+}
+
+
+.botao-principal:hover,
+.botao-secundario:hover {
+    opacity: 1;
 }
 
 .despesa {
@@ -83,4 +115,9 @@
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
+    font-size: 2rem;
 }
+
+/* .div-contas {
+    height: 296px;
+} */

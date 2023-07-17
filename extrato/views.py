@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import BytesIO
 import os
 from django.conf import settings
@@ -22,7 +22,7 @@ def novo_valor(request):
 
     if request.method == "POST":
         valor = request.POST.get('valor')
-        categoria = request.POST.get('categoria')
+        categoria = request.POST.get('categoria-id')
         descricao = request.POST.get('descricao')
         data = request.POST.get('data')
         conta = request.POST.get('conta')
@@ -58,8 +58,8 @@ def novo_valor(request):
             conta.save()
             messages.add_message(request, messages.SUCCESS, f'{tipo_descricao} cadastrada com sucesso.')
 
-        except Exception as e:
-            messages.add_message(request, messages.ERROR, f'Ocorreu um erro ao salvar, tente novamente!\n{e}')
+        except:
+            messages.add_message(request, messages.ERROR, f'Ocorreu um erro ao salvar, tente novamente!')
         
         return redirect(reverse('novo_valor'))
     
@@ -67,40 +67,66 @@ def novo_valor(request):
 
 
 def ver_extrato(request):
-    contas = Conta.objects.all().order_by('apelido')
-    categorias = Categoria.objects.all().order_by('nome')
+    if request.method == 'GET':
+        contas = Conta.objects.all().order_by('apelido')
+        categorias = Categoria.objects.all().order_by('nome')
 
-    valores = Valores.objects.filter(data__month=datetime.now().month).order_by('data')
+        valores = Valores.objects.filter(data__month=datetime.now().month, data__year=datetime.now().year).order_by('-data')
 
-    conta_get = request.GET.get('conta')
-    categoria_get = request.GET.get('categoria')
+        periodos = {
+            '1': 'Somente hoje',
+            '7': 'Últimos 7 dias',
+            '15': 'Últimos 15 dias',
+            '30': 'Últimos 30 dias',
+        }
 
-    if conta_get:
-        valores = valores.filter(conta__id=conta_get)
-    if categoria_get:
-        valores = valores.filter(categoria__id=categoria_get)
+        conta_filter = request.GET.get('conta')
+        categoria_filter = request.GET.get('categoria')
+        periodo_filter = request.GET.get('periodo')
 
-    context = {
-        'valores': valores,
-        'contas': contas,
-        'categorias': categorias
-    }
+        if conta_filter:
+            valores = valores.filter(conta__id=conta_filter)
+            conta_filter = contas.get(id=conta_filter)
+            print(f'conta_filter: {conta_filter}')
 
-    return render(request, 'ver_extrato.html', context)
+        if categoria_filter:
+            valores = valores.filter(categoria__id=categoria_filter)
+            categoria_filter = Categoria.objects.get(id=categoria_filter)
+
+        if periodo_filter == None:
+            periodo_filter = '30'
+
+        periodo = [datetime.today() - timedelta(days=int(periodo_filter)), datetime.today()]
+        valores = valores.filter(data__range=periodo)
+
+        context = {
+            'contas': contas,
+            'categorias': categorias,
+            'periodos': periodos,
+            'valores': valores,
+            'conta_filter': conta_filter,
+            'categoria_filter': categoria_filter,
+            'periodo_filter': periodo_filter
+        }
+
+        return render(request, 'ver_extrato.html', context)
 
 
 def exportar_pdf(request):
-    valores = Valores.objects.filter(data__month=datetime.now().month)
+    MES_ATUAL = datetime.now().month
+    ANO_ATUAL = datetime.now().year
+    valores = Valores.objects.filter(data__month=MES_ATUAL, data__year=ANO_ATUAL).order_by('-data')
     contas = Conta.objects.all().order_by('apelido')
     categorias = Categoria.objects.all().order_by('nome')
-    
+
     path_template = os.path.join(settings.BASE_DIR, 'templates/partials/extrato.html')
     path_output = BytesIO()
 
     context = {
+        'mes_ano': datetime.now().strftime('%m/%Y'),
         'valores': valores,
         'contas': contas,
-        'categorias': categorias
+        'categorias': categorias,
     }
 
     template_render = render_to_string(path_template, context)

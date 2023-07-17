@@ -2,6 +2,8 @@ table {
     width: 100%;
     padding: 20px;
     text-align: center;
+    border-collapse: separate;
+    border-spacing: 0 1rem;
 }
 
 thead, tbody {
@@ -19,17 +21,6 @@ tbody {
 }
 
 td, th {
-    padding: 20px;
+    padding: 10px 20px;
 }
 
-.botao-secundario{
-    background-color: transparent;
-    color: white;
-    text-decoration: none;
-    border: 2px solid var(--contrast-color);
-    padding: 10px;
-    border-radius: 15px;
-    width: 100%;
-    display: block;
-    text-align: center;
-}

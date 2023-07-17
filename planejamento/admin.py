@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import Planejamento
 
-# Register your models here.
+
+class PlanejamentoAdmin(admin.ModelAdmin):
+    list_display = ('categoria', 'mes_ano', 'valor')
+
+
+admin.site.register(Planejamento, PlanejamentoAdmin)

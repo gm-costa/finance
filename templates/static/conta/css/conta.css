@@ -1,0 +1,11 @@
+.red-color {
+    color: red;
+}
+
+.dif-color {
+    color: var(--differential-color);
+}
+
+.contrast-color {
+    color: var(--contrast-color);
+}
